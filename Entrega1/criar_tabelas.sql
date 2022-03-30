@@ -49,21 +49,13 @@ CREATE TABLE telefone_pessoa (
     FOREIGN KEY(pessoa) REFERENCES pessoa(cpf)
 );
 
-CREATE TABLE telefone_fornecedor (
-    fornecedor INT,
-    numero_de_telefone INT,
+CREATE TABLE extravio (
+    codigo_do_extravio INT,
+    extraviado INT,
+    justificativa VARCHAR(50),
     
-    PRIMARY KEY(fornecedor,numero_de_telefone),
-    FOREIGN KEY(fornecedor) REFERENCES fornecedor(cnpj)
-);
-
-CREATE TABLE extravio ( 
-    codigo_do_extravio INT, 
-    extraviado INT, 
-    justificativa VARCHAR(50), 
-     
     PRIMARY KEY(codigo_do_extravio),
-    ADD FOREIGN KEY(extraviado) REFERENCES identificador_pedido(id_)
+    FOREIGN KEY(extraviado) REFERENCES identificador_pedido(id_)
 );
 
 CREATE TABLE funcionario ( 
@@ -74,8 +66,8 @@ CREATE TABLE funcionario (
     data_de_admissao DATE,
 
     PRIMARY KEY(cpf_p),
-    ADD FOREIGN KEY(cpf_p) REFERENCES Pessoa(cpf),
-    ADD FOREIGN KEY(supervisionado_por) REFERENCES funcionario(cpf_p)
+    FOREIGN KEY(cpf_p) REFERENCES Pessoa(cpf),
+    FOREIGN KEY(supervisionado_por) REFERENCES funcionario(cpf_p)
 );
 
 CREATE TABLE destinatario ( 
@@ -83,8 +75,8 @@ CREATE TABLE destinatario (
     cep INT NOT NULL, 
      
     PRIMARY KEY(cpf_p),
-    ADD FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
-    ADD FOREIGN KEY(cep) REFERENCES endereco_destinatario(cep)
+    FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
+    FOREIGN KEY(cep) REFERENCES endereco_destinatario(cep)
 );
 
 CREATE TABLE fornecedor (
@@ -92,8 +84,8 @@ CREATE TABLE fornecedor (
     cep INT NOT NULL,
     
     PRIMARY KEY(cnpj),
-    ADD FOREIGN KEY(cnpj) REFERENCES cnpj_nome_empresa(cnpj),
-    ADD FOREIGN KEY(cep) REFERENCES endereco_fornecedor(cep)
+    FOREIGN KEY(cnpj) REFERENCES cnpj_nome_empresa(cnpj),
+    FOREIGN KEY(cep) REFERENCES endereco_fornecedor(cep)
 );
 
 CREATE TABLE produto (
@@ -104,7 +96,15 @@ CREATE TABLE produto (
     quantidade INT,
     
     PRIMARY KEY(cnpj_fornecedor,nome_do_produto),
-    ADD FOREIGN KEY(cnpj_fornecedor) REFERENCES fornecedor(cnpj)
+    FOREIGN KEY(cnpj_fornecedor) REFERENCES fornecedor(cnpj)
+);
+
+CREATE TABLE telefone_fornecedor (
+    fornecedor INT,
+    numero_de_telefone INT,
+    
+    PRIMARY KEY(fornecedor,numero_de_telefone),
+    FOREIGN KEY(fornecedor) REFERENCES fornecedor(cnpj)
 );
 
 CREATE TABLE pedido (
@@ -115,8 +115,8 @@ CREATE TABLE pedido (
     id_ INT,
     
     PRIMARY KEY(cpf_d,cpf_e,cnpj_fornecedor_produto,nome_produto,id_),
-    ADD FOREIGN KEY(cpf_d) REFERENCES destinatario(cpf_p),
-    ADD FOREIGN KEY(cpf_e) REFERENCES funcionario(cpf_p),
-    ADD FOREIGN KEY(cnpj_fornecedor_produto,nome_produto) REFERENCES produto(cnpj_fornecedor,nome_do_produto),
-    ADD FOREIGN KEY(id_) REFERENCES identificador_pedido(id_)
+    FOREIGN KEY(cpf_d) REFERENCES destinatario(cpf_p),
+    FOREIGN KEY(cpf_e) REFERENCES funcionario(cpf_p),
+    FOREIGN KEY(cnpj_fornecedor_produto,nome_produto) REFERENCES produto(cnpj_fornecedor,nome_do_produto),
+    FOREIGN KEY(id_) REFERENCES identificador_pedido(id_)
 );
