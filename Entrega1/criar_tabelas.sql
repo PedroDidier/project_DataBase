@@ -1,3 +1,17 @@
+DROP TABLE pessoa;
+DROP TABLE cnpj_nome_empresa;
+DROP TABLE endereco_destinatario;
+DROP TABLE endereco_fornecedor;
+DROP TABLE identificador_pedido;
+DROP TABLE telefone_pessoa;
+DROP TABLE extraviado;
+DROP TABLE funcionario;
+DROP TABLE destinatario;
+DROP TABLE fornecedor;
+DROP TABLE produto;
+DROP TABLE telefone_fornecedor;
+DROP TABLE pedido;
+
 CREATE TABLE pessoa ( 
     cpf INT, 
     nome VARCHAR(20) NOT NULL, 
