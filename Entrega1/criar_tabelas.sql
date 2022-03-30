@@ -28,7 +28,7 @@ CREATE TABLE cnpj_nome_empresa (
 );
 
 CREATE TABLE endereco_destinatario (
-    cep INT,
+    cep VARCHAR(9),
     rua VARCHAR(50),
     numero_do_imovel INT,
     complemento VARCHAR(20),
@@ -37,7 +37,7 @@ CREATE TABLE endereco_destinatario (
 );
 
 CREATE TABLE endereco_fornecedor (
-    cep INT,
+    cep VARCHAR(9),
     rua VARCHAR(50),
     numero_do_imovel INT,
     complemento VARCHAR(20),
@@ -55,14 +55,6 @@ CREATE TABLE identificador_pedido (
     PRIMARY KEY(id_)
 );
 
-CREATE TABLE telefone_pessoa (
-    pessoa VARCHAR(14),
-    numero_de_telefone INT,
-    
-    PRIMARY KEY(pessoa,numero_de_telefone),
-    FOREIGN KEY(pessoa) REFERENCES pessoa(cpf)
-);
-
 CREATE TABLE extravio (
     codigo_do_extravio INT,
     extraviado INT,
@@ -72,10 +64,18 @@ CREATE TABLE extravio (
     FOREIGN KEY(extraviado) REFERENCES identificador_pedido(id_)
 );
 
+CREATE TABLE telefone_pessoa (
+    pessoa VARCHAR(14),
+    numero_de_telefone VARCHAR(11),
+    
+    PRIMARY KEY(pessoa,numero_de_telefone),
+    FOREIGN KEY(pessoa) REFERENCES pessoa(cpf)
+);
+
 CREATE TABLE funcionario ( 
     cpf_p VARCHAR(14), 
     supervisionado_por VARCHAR(14),
-    cargo VARCHAR(10),
+    cargo VARCHAR(64),
     renda DECIMAL (7,2),
     data_de_admissao DATE,
 
@@ -86,7 +86,7 @@ CREATE TABLE funcionario (
 
 CREATE TABLE destinatario ( 
     cpf_p VARCHAR(14), 
-    cep INT NOT NULL, 
+    cep VARCHAR(9) NOT NULL, 
      
     PRIMARY KEY(cpf_p),
     FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
@@ -95,7 +95,7 @@ CREATE TABLE destinatario (
 
 CREATE TABLE fornecedor (
     cnpj VARCHAR(18),
-    cep INT NOT NULL,
+    cep VARCHAR(9) NOT NULL,
     
     PRIMARY KEY(cnpj),
     FOREIGN KEY(cnpj) REFERENCES cnpj_nome_empresa(cnpj),
@@ -104,7 +104,7 @@ CREATE TABLE fornecedor (
 
 CREATE TABLE produto (
     cnpj_fornecedor VARCHAR(18),
-    nome_do_produto VARCHAR(20),
+    nome_do_produto VARCHAR(30),
     categoria VARCHAR(20),
     preco DECIMAL(7,2),
     quantidade INT,
