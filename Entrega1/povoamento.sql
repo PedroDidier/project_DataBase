@@ -1,3 +1,7 @@
+-- Sequencia de ids de pedido
+
+CREATE SEQUENCE iterator INCREMENT by 1 START WITH 1;
+
 --- Povoamento Pessoa
 
 INSERT INTO pessoa VALUES ('111.111.111-11', 'Nilo Bemfica', to_date('01/01/2001', 'dd/mm/yyyy'));
@@ -46,14 +50,14 @@ INSERT INTO endereco_fornecedor VALUES ('22222-229', 'rua padre', '229', '1');
 
 --- Povoamento Identificador_pedido
 
-INSERT INTO identificador_pedido VALUES (1, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (2, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (3, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (4, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (5, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (6, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (7, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
-INSERT INTO identificador_pedido VALUES (8, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '11');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '63.30');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'debito', to_date('28/12/2000', 'dd/mm/yyyy'), '11.20');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'boleto', to_date('28/02/2001', 'dd/mm/yyyy'), '10');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('22/01/2001', 'dd/mm/yyyy'), '11');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'debito', to_date('01/01/2001', 'dd/mm/yyyy'), '24.59');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'debito', to_date('01/02/2001', 'dd/mm/yyyy'), '33.10');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('01/01/2001', 'dd/mm/yyyy'), '6.50');
+INSERT INTO identificador_pedido VALUES (iterator.NEXTVAL, to_date('01/01/2001', 'dd/mm/yyyy'), 'pix', to_date('19/04/2001', 'dd/mm/yyyy'), '0');
 
 
 --- Povoamento Extravio
