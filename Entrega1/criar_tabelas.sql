@@ -17,14 +17,14 @@ CREATE TABLE pessoa (
     nome VARCHAR(20) NOT NULL, 
     data_de_nascimento DATE, 
 
-    PRIMARY KEY(cpf) 
+    CONSTRAINT pessoa_pk PRIMARY KEY(cpf) 
 );
 
 CREATE TABLE cnpj_nome_empresa (
     cnpj VARCHAR(18),
     nome_da_empresa VARCHAR(30),
     
-    PRIMARY KEY(cnpj)
+    CONSTRAINT cnpj_pk PRIMARY KEY(cnpj)
 );
 
 CREATE TABLE endereco_destinatario (
@@ -33,7 +33,7 @@ CREATE TABLE endereco_destinatario (
     numero_do_imovel INT,
     complemento VARCHAR(20),
     
-    PRIMARY KEY(cep)
+    CONSTRAINT endereco_destinatario_pk PRIMARY KEY(cep)
 );
 
 CREATE TABLE endereco_fornecedor (
@@ -42,7 +42,7 @@ CREATE TABLE endereco_fornecedor (
     numero_do_imovel INT,
     complemento VARCHAR(20),
     
-    PRIMARY KEY(cep)
+    CONSTRAINT endereco_fornecedor_pk PRIMARY KEY(cep)
 );
 
 CREATE TABLE identificador_pedido (
@@ -52,7 +52,7 @@ CREATE TABLE identificador_pedido (
     data_do_pedido DATE,
     frete DECIMAL(7,2),
     
-    PRIMARY KEY(id_)
+    CONSTRAINT identificador_pedido_pk PRIMARY KEY(id_)
 );
 
 CREATE TABLE extravio (
@@ -60,65 +60,65 @@ CREATE TABLE extravio (
     extraviado INT,
     justificativa VARCHAR(50),
     
-    PRIMARY KEY(codigo_do_extravio),
-    FOREIGN KEY(extraviado) REFERENCES identificador_pedido(id_)
+    CONSTRAINT extravio_pk PRIMARY KEY(codigo_do_extravio),
+    CONSTRAINT extraviado_fk FOREIGN KEY(extraviado) REFERENCES identificador_pedido(id_)
 );
 
 CREATE TABLE telefone_pessoa (
     pessoa VARCHAR(14),
     numero_de_telefone VARCHAR(11),
     
-    PRIMARY KEY(pessoa,numero_de_telefone),
-    FOREIGN KEY(pessoa) REFERENCES pessoa(cpf)
+    CONSTRAINT telefone_pessoa_pk PRIMARY KEY(pessoa,numero_de_telefone),
+    CONSTRAINT telefone_pessoa_cpf_fk FOREIGN KEY(pessoa) REFERENCES pessoa(cpf)
 );
 
 CREATE TABLE funcionario ( 
     cpf_p VARCHAR(14), 
     supervisionado_por VARCHAR(14),
     cargo VARCHAR(64),
-    renda DECIMAL (7,2),
+    renda DECIMAL (7,2) CHECK (renda > 506.50),
     data_de_admissao DATE,
 
-    PRIMARY KEY(cpf_p),
-    FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
-    FOREIGN KEY(supervisionado_por) REFERENCES funcionario(cpf_p)
+    CONSTRAINT funcionario_pk PRIMARY KEY(cpf_p),
+    CONSTRAINT funcionario_cpf_fk FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
+    CONSTRAINT supervisionado_por_fk FOREIGN KEY(supervisionado_por) REFERENCES funcionario(cpf_p)
 );
 
 CREATE TABLE destinatario ( 
     cpf_p VARCHAR(14), 
     cep VARCHAR(9) NOT NULL, 
      
-    PRIMARY KEY(cpf_p),
-    FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
-    FOREIGN KEY(cep) REFERENCES endereco_destinatario(cep)
+    CONSTRAINT destinatario_pk PRIMARY KEY(cpf_p),
+    CONSTRAINT destinatario_cpf_fk FOREIGN KEY(cpf_p) REFERENCES pessoa(cpf),
+    CONSTRAINT destinatario_cep_fk FOREIGN KEY(cep) REFERENCES endereco_destinatario(cep)
 );
 
 CREATE TABLE fornecedor (
     cnpj VARCHAR(18),
     cep VARCHAR(9) NOT NULL,
     
-    PRIMARY KEY(cnpj),
-    FOREIGN KEY(cnpj) REFERENCES cnpj_nome_empresa(cnpj),
-    FOREIGN KEY(cep) REFERENCES endereco_fornecedor(cep)
+    CONSTRAINT fornecedor_pk PRIMARY KEY(cnpj),
+    CONSTRAINT fornecedor_cnpj_fk FOREIGN KEY(cnpj) REFERENCES cnpj_nome_empresa(cnpj),
+    CONSTRAINT fornecedor_cep_fk FOREIGN KEY(cep) REFERENCES endereco_fornecedor(cep)
 );
 
 CREATE TABLE produto (
     cnpj_fornecedor VARCHAR(18),
     nome_do_produto VARCHAR(30),
     categoria VARCHAR(20),
-    preco DECIMAL(7,2),
-    quantidade INT,
+    preco DECIMAL(7,2) CHECK (preco > 0.00),
+    quantidade INT CHECK (quantidade >= 0),
     
-    PRIMARY KEY(cnpj_fornecedor,nome_do_produto),
-    FOREIGN KEY(cnpj_fornecedor) REFERENCES fornecedor(cnpj)
+    CONSTRAINT produto_pk PRIMARY KEY(cnpj_fornecedor,nome_do_produto),
+    CONSTRAINT produto_fornecedor_cnpj_fk FOREIGN KEY(cnpj_fornecedor) REFERENCES fornecedor(cnpj)
 );
 
 CREATE TABLE telefone_fornecedor (
     fornecedor VARCHAR(18),
     numero_de_telefone INT,
     
-    PRIMARY KEY(fornecedor,numero_de_telefone),
-    FOREIGN KEY(fornecedor) REFERENCES fornecedor(cnpj)
+    CONSTRAINT telefone_fornecedor_pk PRIMARY KEY(fornecedor,numero_de_telefone),
+    CONSTRAINT telefone_fornecedor_cnpj_fk FOREIGN KEY(fornecedor) REFERENCES fornecedor(cnpj)
 );
 
 CREATE TABLE pedido (
@@ -128,9 +128,9 @@ CREATE TABLE pedido (
     nome_produto VARCHAR(30),
     id_ INT,
     
-    PRIMARY KEY(cpf_d,cpf_e,cnpj_fornecedor_produto,nome_produto,id_),
-    FOREIGN KEY(cpf_d) REFERENCES destinatario(cpf_p),
-    FOREIGN KEY(cpf_e) REFERENCES funcionario(cpf_p),
-    FOREIGN KEY(cnpj_fornecedor_produto,nome_produto) REFERENCES produto(cnpj_fornecedor,nome_do_produto),
-    FOREIGN KEY(id_) REFERENCES identificador_pedido(id_)
+    CONSTRAINT pedido_pk PRIMARY KEY(cpf_d,cpf_e,cnpj_fornecedor_produto,nome_produto,id_),
+    CONSTRAINT pedido_cpf_d_fk FOREIGN KEY(cpf_d) REFERENCES destinatario(cpf_p),
+    CONSTRAINT pedido_cpf_e_fk FOREIGN KEY(cpf_e) REFERENCES funcionario(cpf_p),
+    CONSTRAINT pedido_fornecedor_fk FOREIGN KEY(cnpj_fornecedor_produto,nome_produto) REFERENCES produto(cnpj_fornecedor,nome_do_produto),
+    CONSTRAINT pedido_id_fk FOREIGN KEY(id_) REFERENCES identificador_pedido(id_)
 );
