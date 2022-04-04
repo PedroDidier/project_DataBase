@@ -26,56 +26,72 @@ WHERE (cnpj_fornecedor = '11.111.111/0001-11');
 
 
 
-/* ---------------- Referência ------------------- */
+SELECT data_do_pedido, id_ FROM identificador_pedido
+WHERE TO_TIMESTAMP(data_do_pedido)
+BETWEEN TO_TIMESTAMP('01-JAN-22 12.00.00.000000 PM') AND TO_TIMESTAMP('01-FEB-22 12.00.00.000000 PM');
 
-/* 6 & 7. SELECT-FROM-WHERE & BETWEEN 
-Descrição: Selecionar a data de agendamento e o cpf do paciente das ocorrências da tabela Agendamento
- onde a data de agendamento está entre 12:00 de 02 de outubro de 2021 e 12:00 de 03 de outubro de 2021. */
-SELECT dt_agendamento, cpf_paciente FROM Agendamento
-WHERE TO_TIMESTAMP(dt_agendamento)
-BETWEEN TO_TIMESTAMP('02-OCT-21 12.00.00.000000 AM') AND TO_TIMESTAMP('03-OCT-21 12.00.00.000000 AM');
+
+/* 6 e 7. SELECT-FROM-WHERE & BETWEEN 
+Descrição: Selecionar a data de admissão e o cpf da pessoa das ocorrências da tabela funcionario
+ onde a data de admissão está entre 12:00 de 01 de janeiro de 2021 e 12:00 de 01 de janeiro de 2022. */
+SELECT cpf_p, data_de_admissao FROM funcionario
+WHERE TO_TIMESTAMP(data_de_admissao)
+BETWEEN TO_TIMESTAMP('01-JAN-21 12.00.00.000000 PM') AND TO_TIMESTAMP('01-JAN-22 12.00.00.000000 PM');
 
 /* 8. IN
-Descrição: Selecionar as datas de agendamento das ocorrências da tabela Agendamento,
- tais que o funcionário encarregado tem CPF ‘7’ ou ‘9’ */
-SELECT cpf_funcionario, dt_agendamento FROM Agendamento
-WHERE cpf_funcionario IN ('7', '9');
+Descrição: Selecionar os CPFs das dos funcionarios das ocorrências da tabela funcionario,
+ tais que o funcionário tenha tenha um supervisor com o CPF '111.111.111-12' ou '111.111.111-13' */
+SELECT cpf_p, supervisionado_por FROM funcionario
+WHERE supervisionado_por IN ('111.111.111-12', '111.111.111-13')
 
 /* 9. LIKE 
-Selecionar, na tabela Pessoa, o nome de todas as pessoas que tem o nome começando com ‘P’. */
-SELECT nome FROM Pessoa
-WHERE nome LIKE 'P&';
+Selecionar, na tabela Pessoa, o nome de todas as pessoas que tem o nome começando com ‘A’. */
+SELECT nome FROM pessoa
+WHERE nome LIKE 'A&';
 
 /* 10. IS NULL OU IS NOT NULL
 Descrição: Buscar o nome dos funcionários que não possuem nenhum supervisor. */
-SELECT P.nome from Funcionario F, Pessoa P
+SELECT P.nome from funcionario F, pessoa P
 WHERE F.cpf = P.cpf AND F.cpf_supervisor IS NULL;
 
 /* 11. INNER JOIN
 Descrição: Buscar o nome na tabela pessoa e CPF
-dos funcionários supervisores na tabela Funcionario, sem admitir valores duplicados. */
-SELECT DISTINCT P.nome FROM Pessoa P
-INNER JOIN Funcionario F
-ON P.cpf = F.cpf_supervisor;
+dos funcionários supervisores na tabela funcionario, sem admitir valores duplicados. */
+SELECT DISTINCT P.nome FROM pessoa P
+INNER JOIN funcionario F
+ON P.cpf = F.supervisionado_por;
 
 /* 12 & 13 & 14 . MAX, MIN, AVG
-Descrição: Encontrar o maior salário, o menor salário,
-e o salário médio entre todos os funcionários da tabela Funcionario. */
-SELECT MAX(salario), MIN(salario), AVG(salario)
-FROM Funcionario;
+Descrição: Encontrar a maior renda, a menor renda,
+e a renda média entre todos os funcionários da tabela funcionario. */
+SELECT MAX(renda), MIN(renda), AVG(renda)
+FROM funcionario;
 
 /* 15. COUNT
-Descrição: Encontrar, na tabela Funcionario, o número de funcionários que recebem mais do que a média do salário. */
+Descrição: Encontrar, na tabela funcionario, o número de funcionários que possuem uma renda acima da media. */
 SELECT COUNT(*)
-FROM Funcionario
-WHERE (salario > (SELECT AVG(salario) from Funcionario));
+FROM funcionario
+WHERE (renda > (SELECT AVG(renda) from funcionario));
 
 /* 16. LEFT OU RIGHT OU FULL OUTER JOIN
 Descrição: Consultar todos os funcionários, mostrando seu CPF,
-e mostrar o plano de saúde daqueles que também são pacientes. */
-SELECT F.cpf, P.plano_de_saude
-FROM Funcionario F LEFT OUTER JOIN Paciente P
-ON F.cpf = P.cpf;
+e mostrar o CEP de entrega daqueles que também são destinatarios. */
+SELECT F.cpf, D.cep
+FROM funcionario F LEFT OUTER JOIN destinatario D
+ON F.cpf_l = D.cpf_p;
+
+/* 21. ORDER BY
+Descrição: Listar o nome e preco de todos os produtos em ordem crescente. */
+SELECT nome_do_produto, preco FROM produto
+ORDER BY preco;
+
+/* 26. GRANT & REVOKE 
+Descrição: Garantir privilégios de DELETE e INSERT na tabela fornecedor, para o acesso PUBLIC (todos os usuários),
+ e depois utilizar o REVOKE para remover o privilégio de remoção (DELETE). */
+GRANT DELETE, INSERT ON fornecedor TO PUBLIC;
+REVOKE DELETE ON fornecedor FROM PUBLIC; 
+
+/* ----------- Referência -------------- */
 
 /* 17 & 18. SUBCONSULTA COM OPERADOR RELACIONAL & SUBCONSULTA COM IN
 Descrição: Buscar o CPF de todos os funcionários que trabalharão
@@ -99,11 +115,6 @@ Descrição: Listar o cpf dos funcionários supervisores que possuem um salário
 SELECT cpf FROM Funcionario WHERE
 cpf IN (SELECT cpf_supervisor FROM Funcionario) AND
 salario >= ALL (SELECT salario from Funcionario);
-
-/* 21. ORDER BY
-Descrição: Listar o salário de todos os funcionários em ordem crescente. */
-SELECT salario FROM Funcionario
-ORDER BY salario;
 
 /* 22. GROUP BY
 Descrição: Mostrar quantos funcionários possuem salário maior que a média salarial
@@ -131,11 +142,5 @@ Descrição: Criar uma visão para pessoas do sexo feminino. */
 CREATE VIEW visao_pessoas AS
 SELECT * FROM Pessoa
 WHERE sexo = 'F';
-
-/* 26. GRANT & REVOKE 
-Descrição: Garantir privilégios de DELETE e INSERT na tabela Pessoa, para o acesso PUBLIC (todos os usuários),
- e depois utilizar o REVOKE para remover o privilégio de remoção (DELETE). */
-GRANT DELETE, INSERT ON Pessoa TO PUBLIC;
-REVOKE DELETE ON Pessoa FROM PUBLIC; 
 
 
