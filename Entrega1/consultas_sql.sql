@@ -106,30 +106,32 @@ ORDER BY preco;
 Descrição: Mostra a média de preço dos produtos de um determinado fornecedor */
 SELECT AVG(preco), cnpj_fornecedor
 FROM produto
-GROUP BY cnpj_fornecedor
+GROUP BY cnpj_fornecedor;
 
 /* 23. HAVING
-Descrição: Mostrar quantos funcionários possuem salário menor que a média salarial
-de todos os funcionários, agrupados por sexo, com a condição de que o número de funcionários,
-por sexo, com média menor que a média salarial, deve ser superior a 1. */
-SELECT COUNT(salario), P.sexo FROM Funcionario F, Pessoa P
-WHERE F.salario < (SELECT AVG(salario) from Funcionario) AND F.cpf = P.cpf
-GROUP BY P.sexo
-HAVING COUNT(salario) > 1;
+Mostra o preço máximo de produto de cada fornecedor, desde que tenha a média de preço
+maior que 10. */
+SELECT MAX(preco), cnpj_fornecedor
+FROM produto
+GROUP BY cnpj_fornecedor
+HAVING AVG(preco) > 10;
 
 /* 24. UNION ou INTERSECT ou MINUS
-Descrição: Encontrar o nome de todas as pessoas que são funcionários e pacientes ao mesmo tempo. */
-SELECT nome FROM Pessoa
-WHERE cpf IN (SELECT cpf FROM Funcionario INTERSECT SELECT cpf FROM Paciente);
+Encontrar o nome de todos os funcionários que já utilizaram o serviço. */
+SELECT nome FROM pessoa
+WHERE cpf IN (SELECT cpf_p FROM funcionario INTERSECT SELECT cpf_p FROM destinatario);
 
 /* 25. CREATE VIEW
-Descrição: Criar uma visão para pessoas do sexo feminino. */
-CREATE VIEW visao_pessoas AS
-SELECT * FROM Pessoa
-WHERE sexo = 'F';
+Criar uma visão para funcionarios sem supervisor */
+CREATE VIEW funcionarios_supervisores AS
+SELECT * FROM funcionario
+WHERE supervisionado_por = NULL;
 
-/* 26. GRANT & REVOKE 
-Descrição: Garantir privilégios de DELETE e INSERT na tabela fornecedor, para o acesso PUBLIC (todos os usuários),
- e depois utilizar o REVOKE para remover o privilégio de remoção (DELETE). */
-GRANT DELETE, INSERT ON fornecedor TO PUBLIC;
-REVOKE DELETE ON fornecedor FROM PUBLIC; 
+-- 26. GRANT & REVOKE 
+
+-- Cria usuário Didier para alterar permissões
+CREATE USER Didier IDENTIFIED BY Didier;
+
+-- Garante e revoga Permissão de update de fornecedor para Didier
+GRANT UPDATE ON fornecedor TO Didier;
+REVOKE UPDATE ON fornecedor FROM Didier;
