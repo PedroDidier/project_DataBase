@@ -148,3 +148,85 @@ CREATE OR REPLACE FUNCTION consultar_produto
                 RETURN infos_do_produto;
 
 END consultar_produto;
+
+
+
+-- 11.While LOOP + 16.Uso de Parâmetros IN, OUT ou  IN OUT
+-- Bloco de codigo que checa quantos pedidos existem com um produto de livro ou papelaria
+DECLARE
+    cnt INTEGER;
+    i INTEGER;
+    q INTEGER;
+    aux_nome pedido.nome_produto%TYPE;
+    aux_empresa pedido.cnpj_fornecedor_produto%TYPE;
+    aux_cat produto.nome%TYPE;
+    aux_q produto.quantidade%TYPE;
+
+BEGIN
+    aux_count := 0;
+    i := 1;
+    SELECT COUNT(*) INTO q FROM produto;
+    WHILE i <= q LOOP
+
+        SELECT x.nome_produto INTO aux_nome
+        FROM pedido x
+        WHERE x.id_ = i;
+
+        SELECT y.cnpj_fornecedor_produto INTO aux_empresa
+        FROM pedido y
+        WHERE y.id_ = i;
+
+        SELECT z.categoria INTO aux_cat
+        FROM produto z
+        WHERE z.cnpj_fornecedor = aux_empresa
+        AND z.nome_do_produto = aux_nome
+
+        IF aux_cat in ('Livro','Papelaria') THEN
+
+            SELECT z.categoria INTO aux_q
+            FROM produto k
+            WHERE k.cnpj_fornecedor = aux_empresa
+            AND k.nome_do_produto = aux_nome
+            AND k.categoria = aux_cat
+
+            cnt := cnt + aux_q;
+        END IF;
+
+        i := i + 1;
+
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('A transportadora está transportando '|| cnt || ' produto(s) de livro ou papelaria');
+END aux1;
+
+
+
+-- 13.Select INTO + 19.Create or replace trigger (comando)
+-- Cria um trigger que alerta quantos produtos já foram registrados na transportadora
+CREATE OR REPLACE TRIGGER produto_repetido
+    BEFORE INSERT ON produto
+        DECLARE produtos INTEGER;
+    BEGIN
+        SELECT COUNT(*) INTO produtos
+        FROM produto;
+
+        produtos := produtos + 1;
+
+        DBMS_OUTPUT.PUT_LINE('A transportadora possui acesso a '|| produtos || ' produto(s)');
+    END;
+
+
+    
+-- 20.Create or replace trigger (linha)
+-- Cria um trigger que levanta uma exception quando se tenta deletar o CEO da empresa
+CREATE OR REPLACE TRIGGER delceo
+    BEFORE DELETE ON funcionario
+        FOR EACH ROW
+            DECLARE deletar_CEO EXCEPTION;
+            BEGIN
+                IF :OLD.cargo='CEO' THEN
+                    RAISE deletar_ceo;
+                END IF;
+            EXCEPTION
+                WHEN deletar_ceo THEN
+                    RAISE_APPLICATION_ERROR(-20011, 'Nao se pode deletar um CEO da empresa.');
+            END;
