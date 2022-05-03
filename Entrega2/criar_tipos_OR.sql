@@ -127,14 +127,14 @@ CREATE OR REPLACE TYPE BODY type_fornecedor AS
     BEGIN
         aux := 0;
         FOR elem in 1 .. produtos_possuidos.COUNT LOOP
-            aux := aux + elem.preco
+            aux := aux + produtos_possuidos(elem).preco
         END LOOP;
         RETURN aux / produtos_possuidos.COUNT
     END;
 END;
 /
 
-CREATE OR REPLACE TYPE BODY tp_fornecedor AS
+CREATE OR REPLACE TYPE BODY type_fornecedor AS
 FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER IS
     BEGIN
         RETURN COUNT_ELEMENTS(produtos_possuidos)
@@ -142,44 +142,46 @@ FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER IS
 END;
 /
 
---Carrinho
-CREATE OR REPLACE TYPE tp_carrinho AS OBJECT(
-    id NUMBER
-);
-/
-
---Componente (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
-CREATE OR REPLACE TYPE tp_componente AS OBJECT(
-    id_carrinho NUMBER,
+--Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
+CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
+    id NUMBER,
     quantidade NUMBER,
-    nome_produto VARCHAR(100),
-    cnpj_fornecedor VARCHAR(100),
-    preco_unidade NUMBER,
+    produtos_possuidos type_lista_de_produtos,
+    MEMBER FUNCTION preco_total
 );
 /
 
-ALTER TYPE tp_componente ADD ATTRIBUTE (preco_componente NUMBER)CASCADE;
+ALTER TYPE type_carrinho ADD ATTRIBUTE (quantidade_itens NUMBER)CASCADE;
 /
 
-CREATE OR REPLACE TYPE BODY tp_componente AS
-    CONSTRUCTOR FUNCTION tp_componente
-    (SELF IN OUT NOCOPY tp_componente, iid NUMBER, iquantidade VARCHAR2, 
-        inome_produto VARCHAR2, icpnj_fornecedor VARCHAR2, ipreco_unidade NUMBER)
+CREATE OR REPLACE TYPE BODY type_carrinho AS
+FINAL MAP MEMBER FUNCTION preco_total return NUMBER IS
+    BEGIN
+        aux := 0;
+        FOR elem in 1 .. produtos_possuidos.COUNT LOOP
+            aux := aux + produtos_possuidos(elem).preco
+        END LOOP;
+        RETURN aux
+    END;
+END;
+/
+
+CREATE OR REPLACE TYPE BODY type_carrinho AS
+    CONSTRUCTOR FUNCTION type_carrinho
+    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iquantidade NUMBER, iprodutos_possuidos type_lista_de_produtos)
     RETURN SELF AS RESULT IS
     BEGIN
-        SELF.id_carrinho := iid;
+        SELF.id := iid;
         SELF.quantidade := iquantidade;
-        SELF.nome_produto := inome_produto;
-        SELF.cpnj_fornecedor := icpnj_fornecedor;
-        SELF.preco_unidade := ipreco_unidade;
-        SELF.preco_componente := ipreco_unidade * iquantidade;
+        SELF.produtos_possuidos := iprodutos;
+        SELF.quantidade_itens := iprodutos.COUNT;
         RETURN;
     END;
 END;
 /
 
 --Pedido
-CREATE OR REPLACE TYPE tp_pedido AS OBJECT(
+CREATE OR REPLACE TYPE type_pedido AS OBJECT(
     id NUMBER,
     --PKs
     cpf_destinatario VARCHAR(11),
@@ -194,9 +196,9 @@ CREATE OR REPLACE TYPE tp_pedido AS OBJECT(
 /
 
 --Extravio
-CREATE OR REPLACE TYPE tp_extravio AS OBJECT(
+CREATE OR REPLACE TYPE type_extravio AS OBJECT(
     codigo NUMBER,
     justificativa VARCHAR(100),
-    id_pedido NUMBER
+    pedido_associado type_pedido
 );
 /
