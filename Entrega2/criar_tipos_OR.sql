@@ -144,8 +144,7 @@ END;
 
 --Carrinho
 CREATE OR REPLACE TYPE tp_carrinho AS OBJECT(
-    id NUMBER,
-    preco_total NUMBER
+    id NUMBER
 );
 /
 
