@@ -17,7 +17,7 @@ DROP TYPE type_endereco
 /
 DROP TYPE type_telefone
 /
-DROP TYPE type_nt_telefone
+DROP TYPE type_lista_de_telefone
 /
 DROP TYPE type_pessoa
 /
@@ -53,12 +53,12 @@ CREATE OR REPLACE TYPE type_endereco AS OBJECT(
 
 
 -- Telefone
-CREATE OR REPLACE TYPE type_telefone AS OBJECT(
+CREATE OR REPLACE TYPE   AS OBJECT(
     numero VARCHAR(100)
 );
 /
 
-CREATE OR REPLACE TYPE type_nt_telefone AS TABLE OF type_telefone;
+CREATE OR REPLACE TYPE type_lista_de_telefone AS ARRAY(10) OF  type_telefone;
 /
 
 
@@ -67,7 +67,7 @@ CREATE OR REPLACE TYPE type_pessoa AS OBJECT(
     CPF VARCHAR(11),
     nome VARCHAR(100),
     data_de_nascimento DATE,
-    telefones type_nt_telefone,
+    telefones type_lista_de_telefone,
     MEMBER PROCEDURE get_data
 )NOT FINAL NOT INSTANTIABLE;
 /
@@ -131,7 +131,7 @@ END;
 CREATE OR REPLACE TYPE type_produto AS OBJECT(
     nome VARCHAR(100),
     quantidade NUMBER,
-    categoria VARCHAR(100),
+    categoria VARCfHAR(100),
     preco NUMBER,
     ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produto) RETURN DECIMAL
 );
@@ -159,7 +159,7 @@ CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
 CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     CNPJ VARCHAR(100),
     nome VARCHAR(100),
-    telefones type_nt_telefone,
+    telefones type_lista_de_telefone,
     endereco type_endereco,
     produtos_possuidos type_lista_de_produtos,
     MEMBER FUNCTION preco_medio RETURN NUMBER,
