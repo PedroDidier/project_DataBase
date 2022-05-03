@@ -142,9 +142,16 @@ FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER IS
 END;
 /
 
---Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
+--Carrinho
 CREATE OR REPLACE TYPE tp_carrinho AS OBJECT(
     id NUMBER,
+    preco_total NUMBER
+);
+/
+
+--Componente (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
+CREATE OR REPLACE TYPE tp_componente AS OBJECT(
+    id_carrinho NUMBER,
     quantidade NUMBER,
     nome_produto VARCHAR(100),
     cnpj_fornecedor VARCHAR(100),
@@ -152,26 +159,45 @@ CREATE OR REPLACE TYPE tp_carrinho AS OBJECT(
 );
 /
 
-ALTER TYPE tp_carrinho ADD ATTRIBUTE (preco_total_item NUMBER)CASCADE;
+ALTER TYPE tp_componente ADD ATTRIBUTE (preco_componente NUMBER)CASCADE;
 /
 
-CREATE OR REPLACE TYPE BODY tp_carrinho AS
-    CONSTRUCTOR FUNCTION tp_carrinho
-    (SELF IN OUT NOCOPY tp_carrinho, iid NUMBER, iquantidade VARCHAR2, 
+CREATE OR REPLACE TYPE BODY tp_componente AS
+    CONSTRUCTOR FUNCTION tp_componente
+    (SELF IN OUT NOCOPY tp_componente, iid NUMBER, iquantidade VARCHAR2, 
         inome_produto VARCHAR2, icpnj_fornecedor VARCHAR2, ipreco_unidade NUMBER)
     RETURN SELF AS RESULT IS
     BEGIN
-        SELF.id := iid;
+        SELF.id_carrinho := iid;
         SELF.quantidade := iquantidade;
         SELF.nome_produto := inome_produto;
         SELF.cpnj_fornecedor := icpnj_fornecedor;
         SELF.preco_unidade := ipreco_unidade;
-        SELF.preco_total_item := ipreco_unidade * iquantidade;
+        SELF.preco_componente := ipreco_unidade * iquantidade;
         RETURN;
     END;
 END;
 /
 
+--Pedido
+CREATE OR REPLACE TYPE tp_pedido AS OBJECT(
+    id NUMBER,
+    --PKs
+    cpf_destinatario VARCHAR(11),
+    cpf_entregador VARCHAR(11),
+    id_carrinho NUMBER,
+    --
+    data_entrega DATE,
+    data_pedido DATE,
+    frete NUMBER,
+    forma_de_pagamento CHAR
+);
+/
 
-
-
+--Extravio
+CREATE OR REPLACE TYPE tp_extravio AS OBJECT(
+    codigo NUMBER,
+    justificativa VARCHAR(100),
+    id_pedido NUMBER
+);
+/
