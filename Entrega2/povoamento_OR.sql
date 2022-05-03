@@ -44,6 +44,9 @@ INSERT INTO tab_fornecedor VALUES(
             type_telefone(
                 '81999998888'
             ),
+            type_telefone(
+                '8132254361'
+            )
         ),
         type_lista_de_produtos(
             type_produto(
