@@ -16,15 +16,15 @@ DROP TABLE tab_extravio
 -- TABELAS --
 
 
--- Destinatario
+-- Destinatario (13. CREATE TABLE OF)
 CREATE TABLE tab_destinatario OF type_destinatario(
     CPF PRIMARY KEY,
     nome NOT NULL,
     endereco NOT NULL
-)
+);
 /
 
--- Funcionario
+-- Funcionario (14. WITH ROWID REFERENCES)
 CREATE TABLE tab_funcionario OF type_funcionario(
     CPF PRIMARY KEY,
     nome NOT NULL,
@@ -32,21 +32,21 @@ CREATE TABLE tab_funcionario OF type_funcionario(
     renda NOT NULL,
     data_de_admissao NOT NULL,
     supervisor WITH ROWID REFERENCES tab_funcionario
-)
+);
 /
 
--- Fornecedor
+-- Fornecedor (20. NESTED TABLE)
 CREATE TABLE tab_fornecedor OF type_fornecedor(
     CNPJ PRIMARY KEY,
     nome NOT NULL,
     endereco NOT NULL
-)
+)NESTED TABLE produtos_possuidos STORE AS produtos_do_fornecedor;
 /
 
 -- Carrinho
 CREATE TABLE tab_carrinho OF type_carrinho(
     id PRIMARY KEY
-);
+)NESTED TABLE produtos_possuidos STORE AS produtos_do_carrinho;
 /
 
 -- Pedido
