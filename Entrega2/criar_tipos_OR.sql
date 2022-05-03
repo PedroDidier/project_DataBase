@@ -1,8 +1,6 @@
 --- DROP TABLES ---
 
 --- DROP TYPES --- 
-DROP TYPE type_lista_de_telefones
-/
 DROP TYPE type_telefone
 /
 DROP TYPE type_endereco
@@ -24,16 +22,14 @@ CREATE OR REPLACE TYPE type_telefone AS OBJECT(
 );
 /
 
---Lista de Telefones
-CREATE OR REPLACE TYPE type_lista_de_telefones AS VARRAY(5) OF type_telefone;
-/
+CREATE OR REPLACE TYPE type_nt_telefone AS TABLE OF type_telefone
 
 --Pessoa (3. MEMBER PROCEDURE, 10. NOT INSTANTIABLE TYPE/MEMBER, 11. HERANÇA DE TIPOS (UNDER/NOT FINAL))
 CREATE OR REPLACE TYPE type_pessoa AS OBJECT(
     CPF VARCHAR(11)
     nome VARCHAR(100),
     data_de_nascimento DATE,
-    telefones type_lista_de_telefones,
+    telefones type_nt_telefone,
     MEMBER PROCEDURE get_data
 )NOT FINAL NOT INSTANTIABLE;
 /
@@ -101,9 +97,8 @@ CREATE OR REPLACE TYPE type_produto AS OBJECT(
     nome VARCHAR(100),
     quantidade NUMBER,
     categoria VARCHAR(100),
-    preco NUMBER,
-    cpnj_fornecedor VARCHAR(100)
-)
+    preco NUMBER
+);
 /
 
 CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
@@ -113,7 +108,7 @@ CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
 CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     CNPJ VARCHAR(100),
     nome VARCHAR(100),
-    telefones type_lista_de_telefones,
+    telefones type_nt_telefone,
     endereco type_endereco,
     produtos_possuidos type_lista_de_produtos,
     MEMBER FUNCTION preco_medio
@@ -145,7 +140,6 @@ END;
 --Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
 CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
     id NUMBER,
-    quantidade NUMBER,
     produtos_possuidos type_lista_de_produtos,
     MEMBER FUNCTION preco_total
 );
@@ -168,11 +162,10 @@ END;
 
 CREATE OR REPLACE TYPE BODY type_carrinho AS
     CONSTRUCTOR FUNCTION type_carrinho
-    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iquantidade NUMBER, iprodutos_possuidos type_lista_de_produtos)
+    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iprodutos_possuidos type_lista_de_produtos)
     RETURN SELF AS RESULT IS
     BEGIN
         SELF.id := iid;
-        SELF.quantidade := iquantidade;
         SELF.produtos_possuidos := iprodutos;
         SELF.quantidade_itens := iprodutos.COUNT;
         RETURN;
@@ -184,9 +177,9 @@ END;
 CREATE OR REPLACE TYPE type_pedido AS OBJECT(
     id NUMBER,
     --PKs
-    cpf_destinatario VARCHAR(11),
-    cpf_entregador VARCHAR(11),
-    id_carrinho NUMBER,
+    destinatario_ped REF type_destinatario,
+    entregador_ped REF type_funcionario,
+    carrinho_ped REF type_carrinho,
     --
     data_entrega DATE,
     data_pedido DATE,
@@ -199,6 +192,6 @@ CREATE OR REPLACE TYPE type_pedido AS OBJECT(
 CREATE OR REPLACE TYPE type_extravio AS OBJECT(
     codigo NUMBER,
     justificativa VARCHAR(100),
-    pedido_associado type_pedido
+    pedido_associado REF type_pedido
 );
 /
