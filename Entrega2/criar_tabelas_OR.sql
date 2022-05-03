@@ -1,6 +1,22 @@
---DROP TABLES-------------------------------------------------------------
+-- DROP TABLES --
+DROP TABLE tab_destinatario
+/
+DROP TABLE tab_funcionario
+/
+DROP TABLE tab_fornecedor
+/
+DROP TABLE tab_carrinho
+/
+DROP TABLE tab_pedido
+/
+DROP TABLE tab_extravio
+/
 
---Destinatario
+
+-- TABELAS --
+
+
+-- Destinatario
 CREATE TABLE tab_destinatario OF type_destinatario(
     CPF PRIMARY KEY,
     nome NOT NULL,
@@ -8,7 +24,7 @@ CREATE TABLE tab_destinatario OF type_destinatario(
 )NESTED TABLE telefones STORE AS lista_telefones;
 /
 
---Funcionario
+-- Funcionario
 CREATE TABLE tab_funcionario OF type_funcionario(
     CPF PRIMARY KEY,
     nome NOT NULL,
@@ -19,7 +35,7 @@ CREATE TABLE tab_funcionario OF type_funcionario(
 )NESTED TABLE telefones STORE AS lista_telefones;
 /
 
---Fornecedor
+-- Fornecedor
 CREATE TABLE tab_fornecedor OF type_fornecedor(
     CNPJ PRIMARY KEY,
     nome NOT NULL,
@@ -27,13 +43,13 @@ CREATE TABLE tab_fornecedor OF type_fornecedor(
 )NESTED TABLE telefones STORE AS lista_telefones;
 /
 
---Carrinho
+-- Carrinho
 CREATE TABLE tab_carrinho OF type_carrinho(
     id PRIMARY KEY
 );
 /
 
---Pedido
+-- Pedido
 CREATE TABLE tab_pedido OF type_pedido(
     id NOT NULL,
     -- PKs
@@ -50,7 +66,7 @@ CREATE TABLE tab_pedido OF type_pedido(
 );
 /
 
---Extravio
+-- Extravio
 CREATE TABLE tab_extravio OF type_extravio(
     codigo PRIMARY KEY,
     justificativa NOT NULL,

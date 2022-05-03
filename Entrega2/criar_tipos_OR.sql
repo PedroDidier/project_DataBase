@@ -1,13 +1,48 @@
---- DROP TABLES ---
-
---- DROP TYPES --- 
-DROP TYPE type_telefone
+-- DROP TABLES --
+DROP TABLE tab_destinatario
 /
+DROP TABLE tab_funcionario
+/
+DROP TABLE tab_fornecedor
+/
+DROP TABLE tab_carrinho
+/
+DROP TABLE tab_pedido
+/
+DROP TABLE tab_extravio
+/
+
+-- DROP TYPES -- 
 DROP TYPE type_endereco
 /
---- TIPOS ---
+DROP TYPE type_telefone
+/
+DROP TYPE type_nt_telefone
+/
+DROP TYPE type_pessoa
+/
+DROP TYPE type_funcionario
+/
+DROP TYPE type_destinatario
+/
+DROP TYPE type_produto
+/
+DROP TYPE type_lista_de_produtos
+/
+DROP TYPE type_fornecedor
+/
+DROP TYPE type_carrinho
+/
+DROP TYPE type_pedido
+/
+DROP TYPE type_extravio
+/
 
---Endereço (1.CREATE OF REPLACE TYPE)
+
+-- TIPOS --
+
+
+-- Endereço (1.CREATE OF REPLACE TYPE)
 CREATE OR REPLACE TYPE type_endereco AS OBJECT(
     CEP VARCHAR(100),
     rua VARCHAR(100),
@@ -16,7 +51,8 @@ CREATE OR REPLACE TYPE type_endereco AS OBJECT(
 );
 /
 
---Telefone
+
+-- Telefone
 CREATE OR REPLACE TYPE type_telefone AS OBJECT(
     numero VARCHAR(100)
 );
@@ -24,7 +60,8 @@ CREATE OR REPLACE TYPE type_telefone AS OBJECT(
 
 CREATE OR REPLACE TYPE type_nt_telefone AS TABLE OF type_telefone
 
---Pessoa (3. MEMBER PROCEDURE, 10. NOT INSTANTIABLE TYPE/MEMBER, 11. HERANÇA DE TIPOS (UNDER/NOT FINAL))
+
+-- Pessoa (3. MEMBER PROCEDURE, 10. NOT INSTANTIABLE TYPE/MEMBER, 11. HERANÇA DE TIPOS (UNDER/NOT FINAL))
 CREATE OR REPLACE TYPE type_pessoa AS OBJECT(
     CPF VARCHAR(11)
     nome VARCHAR(100),
@@ -34,7 +71,8 @@ CREATE OR REPLACE TYPE type_pessoa AS OBJECT(
 )NOT FINAL NOT INSTANTIABLE;
 /
 
---Funcionario (2. CREATE OR REPLACE TYPE BODY, 6. MAP MEMBER FUNCTION, 8. OVERRIDING MEMBER, 15. REF, 16. SCOPE IS)
+
+-- Funcionario (2. CREATE OR REPLACE TYPE BODY, 6. MAP MEMBER FUNCTION, 8. OVERRIDING MEMBER, 15. REF, 16. SCOPE IS)
 CREATE OR REPLACE TYPE type_funcionario UNDER type_pessoa(
     cargo VARCHAR(100),
     renda NUMBER,
@@ -63,7 +101,8 @@ CREATE OR REPLACE BODY TYPE type_funcionario AS
 END;
 /
 
---Destinatário (5. ORDER MEMBER FUNCTION)
+
+-- Destinatário (5. ORDER MEMBER FUNCTION)
 CREATE OR REPLACE TYPE type_destinatario UNDER type_pessoa(
     endereco type_endereco,
     data_primeiro_pedido DATE, 
@@ -92,7 +131,8 @@ CREATE OR REPLACE BODY TYPE type_destinatario AS
 END;
 /
 
---Produto
+
+-- Produto
 CREATE OR REPLACE TYPE type_produto AS OBJECT(
     nome VARCHAR(100),
     quantidade NUMBER,
@@ -104,7 +144,8 @@ CREATE OR REPLACE TYPE type_produto AS OBJECT(
 CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
 /
 
---Fornecedor (4. MEMBER FUNCTION, 9. FINAL MEMBER)
+
+-- Fornecedor (4. MEMBER FUNCTION, 9. FINAL MEMBER)
 CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     CNPJ VARCHAR(100),
     nome VARCHAR(100),
@@ -115,7 +156,6 @@ CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER
 )
 /
-
 
 CREATE OR REPLACE TYPE BODY type_fornecedor AS
     MEMBER FUNCTION preco_medio IS
@@ -137,7 +177,8 @@ FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER IS
 END;
 /
 
---Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
+
+-- Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
 CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
     id NUMBER,
     produtos_possuidos type_lista_de_produtos,
@@ -173,7 +214,8 @@ CREATE OR REPLACE TYPE BODY type_carrinho AS
 END;
 /
 
---Pedido
+
+-- Pedido
 CREATE OR REPLACE TYPE type_pedido AS OBJECT(
     id NUMBER,
     --PKs
@@ -188,7 +230,8 @@ CREATE OR REPLACE TYPE type_pedido AS OBJECT(
 );
 /
 
---Extravio
+
+-- Extravio
 CREATE OR REPLACE TYPE type_extravio AS OBJECT(
     codigo NUMBER,
     justificativa VARCHAR(100),
