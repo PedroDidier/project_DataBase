@@ -16,7 +16,7 @@ DROP TABLE tab_extravio
 -- TABELAS --
 
 
--- Destinatario
+-- Destinatario (13.CREATE TABLE OF, 20.NESTED TABLE)
 CREATE TABLE tab_destinatario OF type_destinatario(
     CPF PRIMARY KEY,
     nome NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE tab_destinatario OF type_destinatario(
 )NESTED TABLE telefones STORE AS lista_telefones_pessoas;
 /
 
--- Funcionario
+-- Funcionario (14.WITH ROWID REFERENCES)
 CREATE TABLE tab_funcionario OF type_funcionario(
     CPF PRIMARY KEY,
     nome NOT NULL,
