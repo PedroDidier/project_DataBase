@@ -1,3 +1,16 @@
+-- Destinatário
+
+-- Funcionário
+
+-- Fornecedor
+
+-- Carrinho
+
+-- Pedido
+
+-- Extravio
+
+
 CREATE SEQUENCE seq_agendamento INCREMENT by 1 START WITH 1; 
 /
 CREATE SEQUENCE seq_vacina INCREMENT by 1 START WITH 1;
