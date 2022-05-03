@@ -58,12 +58,13 @@ CREATE OR REPLACE TYPE type_telefone AS OBJECT(
 );
 /
 
-CREATE OR REPLACE TYPE type_nt_telefone AS TABLE OF type_telefone
+CREATE OR REPLACE TYPE type_nt_telefone AS TABLE OF type_telefone;
+/
 
 
 -- Pessoa (3. MEMBER PROCEDURE, 10. NOT INSTANTIABLE TYPE/MEMBER, 11. HERANÇA DE TIPOS (UNDER/NOT FINAL))
 CREATE OR REPLACE TYPE type_pessoa AS OBJECT(
-    CPF VARCHAR(11)
+    CPF VARCHAR(11),
     nome VARCHAR(100),
     data_de_nascimento DATE,
     telefones type_nt_telefone,
@@ -78,16 +79,17 @@ CREATE OR REPLACE TYPE type_funcionario UNDER type_pessoa(
     renda NUMBER,
     data_de_admissao DATE,
     supervisor REF type_funcionario,
-    MAP MEMBER FUNCTION get_renda RETURN NUMBER,
+    MEMBER FUNCTION get_renda RETURN NUMBER,
     OVERRIDING MEMBER PROCEDURE get_data
 )FINAL;
-/ 
+/
 
-CREATE OR REPLACE BODY TYPE type_funcionario AS
-    MAP MEMBER FUNCTION get_renda return NUMBER IS
+CREATE OR REPLACE TYPE BODY type_funcionario AS
+    MEMBER FUNCTION get_renda return NUMBER IS
     BEGIN
-        return renda
+        RETURN renda
     END;
+
 
     OVERRIDING MEMBER PROCEDURE get_data IS
     BEGIN 
@@ -105,13 +107,11 @@ END;
 -- Destinatário (5. ORDER MEMBER FUNCTION)
 CREATE OR REPLACE TYPE type_destinatario UNDER type_pessoa(
     endereco type_endereco,
-    data_primeiro_pedido DATE, 
     OVERRIDING MEMBER PROCEDURE get_data
-    ORDER MEMBER FUNCTION mais_antigo(SELF IN OUT NOCOPY type_destinatario, OTHER type_destinatario) RETURN BOOLEAN
 )FINAL;
 /
 
-CREATE OR REPLACE BODY TYPE type_destinatario AS
+CREATE OR REPLACE TYPE BODY type_destinatario AS
     OVERRIDING MEMBER PROCEDURE get_data IS
     BEGIN
         DBMS_OUTPUT.Put_line('CPF: ' || CPF);
@@ -123,11 +123,6 @@ CREATE OR REPLACE BODY TYPE type_destinatario AS
         DBMS_OUTPUT.Put_line('Complemento: ' || endereco.complemento);
         DBMS_OUTPUT.Put_line('Número: ' || endereco.numero);
     END;
-
-    ORDER MEMBER FUNCTION mais_antigo(SELF IN OUT NOCOPY type_destinatario, OTHER type_destinatario) RETURN BOOLEAN IS
-    BEGIN
-        RETURN SELF.data_primeiro_pedido < OTHER.data_primeiro_pedido
-    END;
 END;
 /
 
@@ -137,8 +132,23 @@ CREATE OR REPLACE TYPE type_produto AS OBJECT(
     nome VARCHAR(100),
     quantidade NUMBER,
     categoria VARCHAR(100),
-    preco NUMBER
+    preco NUMBER,
+    ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produto) RETURN DECIMAL
 );
+/
+
+CREATE OR REPLACE TYPE BODY type_produto AS
+ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produto) RETURN DECIMAL IS
+    BEGIN
+        IF SELF.preco < PROD.preco THEN
+            RETURN -1;               
+        ELSIF SELF.preco > PROD.preco THEN 
+            RETURN 1;                
+        ELSE 
+            RETURN 0;
+        END IF;
+    END;
+END;
 /
 
 CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
@@ -152,9 +162,9 @@ CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     telefones type_nt_telefone,
     endereco type_endereco,
     produtos_possuidos type_lista_de_produtos,
-    MEMBER FUNCTION preco_medio
-    FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER
-)
+    MEMBER FUNCTION preco_medio RETURN NUMBER,
+    FINAL MAP MEMBER FUNCTION quantidade_de_produtos RETURN NUMBER
+);
 /
 
 CREATE OR REPLACE TYPE BODY type_fornecedor AS
@@ -182,7 +192,7 @@ END;
 CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
     id NUMBER,
     produtos_possuidos type_lista_de_produtos,
-    MEMBER FUNCTION preco_total
+    MEMBER FUNCTION preco_total RETURN NUMBER
 );
 /
 
