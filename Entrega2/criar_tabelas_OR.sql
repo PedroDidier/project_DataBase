@@ -56,6 +56,7 @@ CREATE TABLE tab_pedido OF type_pedido(
     destinatario_ped WITH ROWID REFERENCES tab_destinatario,
     entregador_ped WITH ROWID REFERENCES tab_funcionario,
     carrinho_ped WITH ROWID REFERENCES tab_carrinho,
+    -- end PKs
     data_entrega NOT NULL,
     data_pedido NOT NULL,
     frete NOT NULL,
