@@ -21,7 +21,7 @@ CREATE TABLE tab_destinatario OF type_destinatario(
     CPF PRIMARY KEY,
     nome NOT NULL,
     endereco NOT NULL
-)NESTED TABLE telefones STORE AS lista_telefones_pessoas;
+)
 /
 
 -- Funcionario
@@ -32,7 +32,7 @@ CREATE TABLE tab_funcionario OF type_funcionario(
     renda NOT NULL,
     data_de_admissao NOT NULL,
     supervisor WITH ROWID REFERENCES tab_funcionario
-)NESTED TABLE telefones STORE AS lista_telefones_funcionarios;
+)
 /
 
 -- Fornecedor
@@ -40,7 +40,7 @@ CREATE TABLE tab_fornecedor OF type_fornecedor(
     CNPJ PRIMARY KEY,
     nome NOT NULL,
     endereco NOT NULL
-)NESTED TABLE telefones STORE AS lista_telefones_fornecedores;
+)
 /
 
 -- Carrinho
