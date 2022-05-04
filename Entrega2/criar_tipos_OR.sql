@@ -58,7 +58,7 @@ CREATE OR REPLACE TYPE type_endereco AS OBJECT(
 /
 
 
--- Telefone
+-- Telefone (19. VARRAY)
 CREATE OR REPLACE TYPE type_telefone  AS OBJECT(
     numero VARCHAR(100)
 );

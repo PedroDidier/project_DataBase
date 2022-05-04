@@ -3,7 +3,7 @@ CREATE SEQUENCE seq_carrinho INCREMENT by 1 START WITH 1;
 CREATE SEQUENCE seq_pedido INCREMENT by 1 START WITH 1; 
 /
 
--- Destinatário
+-- Destinatário (17. INSERT INTO, 18. VALUE)
 INSERT INTO tab_destinatario VALUES(
     type_destinatario(
         '11132342152',
