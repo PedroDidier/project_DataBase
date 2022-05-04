@@ -159,7 +159,7 @@ INSERT INTO tab_extravio VALUES (
         'Caminhão roubado',
         (SELECT REF(P) FROM tab_pedido P WHERE P.id = 1)
     )
-)
+)/
 
 INSERT INTO tab_extravio VALUES (
     type_extravio(
@@ -167,7 +167,7 @@ INSERT INTO tab_extravio VALUES (
         'Caminhão assaltado',
         (SELECT REF(P) FROM tab_pedido P WHERE P.id = 2)
     )
-)
+)/
 
 INSERT INTO tab_extravio VALUES (
     type_extravio(
@@ -175,4 +175,4 @@ INSERT INTO tab_extravio VALUES (
         'Caminhão danificado',
         (SELECT REF(P) FROM tab_pedido P WHERE P.id = 3)
     )
-)
+)/

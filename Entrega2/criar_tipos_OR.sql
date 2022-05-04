@@ -58,7 +58,7 @@ CREATE OR REPLACE TYPE   AS OBJECT(
 );
 /
 
-CREATE OR REPLACE TYPE type_lista_de_telefone AS ARRAY(10) OF  type_telefone;
+CREATE OR REPLACE TYPE type_lista_de_telefone AS VARRAY(10) OF  telefone;
 /
 
 
