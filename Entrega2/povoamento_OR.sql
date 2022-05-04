@@ -462,40 +462,39 @@ INSERT INTO tab_carrinho VALUES(
 
 
 -- Pedido
-
 INSERT INTO tab_pedido VALUES (
     seq_pedido.NEXTVAL,
-    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="11132342152"),
-    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111111"),
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf='11132342152'),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf='11111111111'),
     (SELECT REF(C) FROM tab_carrinho C WHERE C.id=1),
-    to_date("13/02/2022", dd/mm/yyyy),
-    to_date("06/02/2022", dd/mm/yyyy),
+    to_date('13/02/2022', 'dd/mm/yyyy'),
+    to_date('06/02/2022', 'dd/mm/yyyy'),
     32,
-    "C"
+    'C'
 );
 /
 
 INSERT INTO tab_pedido VALUES (
     seq_pedido.NEXTVAL,
-    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="13421454442"),
-    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111112"),
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf='13421454442'),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf='11111111112'),
     (SELECT REF(C) FROM tab_carrinho C WHERE C.id=2),
-    to_date("17/02/2022", dd/mm/yyyy),
-    to_date("05/02/2022", dd/mm/yyyy),
+    to_date('17/02/2022', 'dd/mm/yyyy'),
+    to_date('05/02/2022', 'dd/mm/yyyy'),
     7,
-    "C"
+    'C'
 );
 /
 
 INSERT INTO tab_pedido VALUES (
     seq_pedido.NEXTVAL,
-    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="13421452212"),
-    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111113"),
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf='13421452212'),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf='11111111113'),
     (SELECT REF(C) FROM tab_carrinho C WHERE C.id=3),
-    to_date("18/03/2022", dd/mm/yyyy),
-    to_date("26/02/2022", dd/mm/yyyy),
+    to_date('18/03/2022', 'dd/mm/yyyy'),
+    to_date('26/02/2022', 'dd/mm/yyyy'),
     148,
-    "B"
+    'B'
 );
 /
 
