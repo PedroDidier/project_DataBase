@@ -84,6 +84,95 @@ INSERT INTO tab_destinatario VALUES(
 
 -- Fornecedor
 
+
+INSERT INTO tab_fornecedor VALUES(
+    type_fornecedor(
+        '1111',
+        'Máquina de Monstro',
+        type_lista_de_telefone(
+            type_telefone(
+                '81999997777'
+            )
+        ),
+        type_lista_de_produtos(
+            type_produto(
+                'Whey Chocolate',
+                '5000',
+                'Whey',
+                110
+            ),
+            type_produto(
+                'Whey Baunilha',
+                '3000',
+                'Whey',
+                110
+            ),
+            type_produto(
+                'Barra Proteica',
+                '500',
+                'Barra Nutricional',
+                12,
+            )
+        )
+    )
+)/
+
+INSERT INTO tab_fornecedor VALUES(
+    type_fornecedor(
+        '2222',
+        'Pickcells',
+        type_lista_de_telefone(
+            type_telefone(
+                '81999998888'
+            ),
+            type_telefone(
+                '8132254361'
+            )
+        ),
+        type_lista_de_produtos(
+            type_produto(
+                'Software de identificação de parasitas',
+                '100',
+                'Software',
+                1200
+            )
+        )
+    )
+)/
+
+
+INSERT INTO tab_fornecedor VALUES(
+    type_fornecedor(
+        '33333',
+        'Kabum',
+        type_lista_de_telefone(
+            type_telefone(
+                '81999996666'
+            ),
+        ),
+        type_lista_de_produtos(
+            type_produto(
+                'Mouse Razer',
+                '50',
+                'Mouse',
+                999
+            ),
+            type_produto(
+                'Mouse Logitech',
+                '100',
+                'Mouse',
+                150
+            ),
+            type_produto(
+                'Teclado Logitech',
+                '85',
+                'Teclado',
+                180,
+            )
+        )
+    )
+)/
+
 -- Carrinho
 
 -- Pedido
