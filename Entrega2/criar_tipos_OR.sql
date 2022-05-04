@@ -27,7 +27,7 @@ DROP TYPE type_destinatario
 /
 DROP TYPE type_produto
 /
-DROP TYPE type_lista_de_produtos
+DROP TYPE type_nt_produto
 /
 DROP TYPE type_fornecedor
 /
@@ -42,7 +42,7 @@ DROP TYPE type_extravio
 -- TIPOS --
 
 
--- Endereço (1.CREATE OF REPLACE TYPE)
+-- Endereço (1. CREATE OF REPLACE TYPE)
 CREATE OR REPLACE TYPE type_endereco AS OBJECT(
     CEP VARCHAR(100),
     rua VARCHAR(100),
@@ -53,12 +53,12 @@ CREATE OR REPLACE TYPE type_endereco AS OBJECT(
 
 
 -- Telefone
-CREATE OR REPLACE TYPE   AS OBJECT(
+CREATE OR REPLACE TYPE type_telefone  AS OBJECT(
     numero VARCHAR(100)
 );
 /
 
-CREATE OR REPLACE TYPE type_lista_de_telefone AS VARRAY(10) OF  telefone;
+CREATE OR REPLACE TYPE type_lista_de_telefone AS VARRAY(10) OF type_telefone;
 /
 
 
@@ -131,7 +131,7 @@ END;
 CREATE OR REPLACE TYPE type_produto AS OBJECT(
     nome VARCHAR(100),
     quantidade NUMBER,
-    categoria VARCfHAR(100),
+    categoria VARCHAR(100),
     preco NUMBER,
     ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produto) RETURN DECIMAL
 );
@@ -151,7 +151,7 @@ ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produ
 END;
 /
 
-CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(100) OF type_produto;
+CREATE OR REPLACE TYPE type_nt_produto AS TABLE OF type_produto;
 /
 
 
@@ -161,28 +161,24 @@ CREATE OR REPLACE TYPE type_fornecedor AS OBJECT(
     nome VARCHAR(100),
     telefones type_lista_de_telefone,
     endereco type_endereco,
-    produtos_possuidos type_lista_de_produtos,
+    produtos_possuidos type_nt_produto,
     MEMBER FUNCTION preco_medio RETURN NUMBER,
-    FINAL MAP MEMBER FUNCTION quantidade_de_produtos RETURN NUMBER
+    FINAL MAP MEMBER FUNCTION quantidade_de_telefones RETURN NUMBER
 );
 /
 
 CREATE OR REPLACE TYPE BODY type_fornecedor AS
     MEMBER FUNCTION preco_medio IS
     BEGIN
-        aux := 0;
-        FOR elem in 1 .. produtos_possuidos.COUNT LOOP
-            aux := aux + produtos_possuidos(elem).preco
-        END LOOP;
-        RETURN aux / produtos_possuidos.COUNT
+        RETURN SELECT AVG(preco) FROM produtos_possuidos
     END;
 END;
 /
 
 CREATE OR REPLACE TYPE BODY type_fornecedor AS
-FINAL MAP MEMBER FUNCTION quantidade_de_produtos return NUMBER IS
+FINAL MAP MEMBER FUNCTION quantidade_de_telefones return NUMBER IS
     BEGIN
-        RETURN COUNT_ELEMENTS(produtos_possuidos)
+        RETURN COUNT_ELEMENTS(telefones)
     END;
 END;
 /
@@ -191,7 +187,7 @@ END;
 -- Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
 CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
     id NUMBER,
-    produtos_possuidos type_lista_de_produtos,
+    produtos_possuidos type_nt_produto,
     MEMBER FUNCTION preco_total RETURN NUMBER
 );
 /
@@ -213,12 +209,12 @@ END;
 
 CREATE OR REPLACE TYPE BODY type_carrinho AS
     CONSTRUCTOR FUNCTION type_carrinho
-    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iprodutos_possuidos type_lista_de_produtos)
+    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iprodutos_possuidos type_nt_produto)
     RETURN SELF AS RESULT IS
     BEGIN
         SELF.id := iid;
         SELF.produtos_possuidos := iprodutos;
-        SELF.quantidade_itens := iprodutos.COUNT;
+        SELF.quantidade_itens := SELECT COUNT(*) FROM type_nt_produto;
         RETURN;
     END;
 END;
