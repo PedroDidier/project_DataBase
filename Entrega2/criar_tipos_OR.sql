@@ -3,6 +3,8 @@ DROP TABLE tab_destinatario
 /
 DROP TABLE tab_funcionario
 /
+DROP TABLE tab_produto
+/
 DROP TABLE tab_fornecedor
 /
 DROP TABLE tab_carrinho
@@ -129,6 +131,7 @@ END;
 
 -- Produto
 CREATE OR REPLACE TYPE type_produto AS OBJECT(
+    id NUMBER,
     nome VARCHAR(100),
     quantidade NUMBER,
     categoria VARCHAR(100),

@@ -43,6 +43,15 @@ CREATE TABLE tab_fornecedor OF type_fornecedor(
 )NESTED TABLE produtos_possuidos STORE AS produtos_do_fornecedor;
 /
 
+-- Produto
+CREATE TABLE tab_produto OF type_produto(
+    id PRIMARY KEY,
+    nome NOT NULL,
+    quantidade NOT NULL,
+    preco NOT NULL
+);
+/
+
 -- Carrinho
 CREATE TABLE tab_carrinho OF type_carrinho(
     id PRIMARY KEY
