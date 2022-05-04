@@ -3,9 +3,9 @@ DROP TABLE tab_destinatario
 /
 DROP TABLE tab_funcionario
 /
-DROP TABLE tab_produto
-/
 DROP TABLE tab_fornecedor
+/
+DROP TABLE tab_produto
 /
 DROP TABLE tab_carrinho
 /
@@ -28,6 +28,10 @@ DROP TYPE type_funcionario
 DROP TYPE type_destinatario
 /
 DROP TYPE type_produto
+/
+DROP TYPE type_lista_de_produtos
+/
+DROP TYPE type_e_produto
 /
 DROP TYPE type_nt_produto
 /
@@ -154,7 +158,15 @@ ORDER MEMBER FUNCTION mais_caro(SELF IN OUT NOCOPY type_produto, PROD type_produ
 END;
 /
 
-CREATE OR REPLACE TYPE type_nt_produto AS TABLE OF type_produto;
+CREATE OR REPLACE TYPE type_lista_de_produtos AS VARRAY(50) OF type_produto;
+/
+
+CREATE OR REPLACE TYPE type_e_produto AS OBJECT(
+    produto_referente REF type_produto
+);
+/
+
+CREATE OR REPLACE TYPE type_nt_produto AS TABLE OF type_e_produto;
 /
 
 
@@ -190,7 +202,7 @@ END;
 -- Carrinho (7. CONSTRUCTOR FUNCTION, 12. ALTER TYPE)
 CREATE OR REPLACE TYPE type_carrinho AS OBJECT(
     id NUMBER,
-    produtos_possuidos type_nt_produto,
+    produtos_possuidos type_lista_de_produtos,
     MEMBER FUNCTION preco_total RETURN NUMBER
 );
 /
@@ -199,7 +211,7 @@ ALTER TYPE type_carrinho ADD ATTRIBUTE (quantidade_itens NUMBER)CASCADE;
 /
 
 CREATE OR REPLACE TYPE BODY type_carrinho AS
-FINAL MAP MEMBER FUNCTION preco_total return NUMBER IS
+MEMBER FUNCTION preco_total return NUMBER IS
     BEGIN
         aux := 0;
         FOR elem in 1 .. produtos_possuidos.COUNT LOOP
@@ -211,13 +223,12 @@ END;
 /
 
 CREATE OR REPLACE TYPE BODY type_carrinho AS
-    CONSTRUCTOR FUNCTION type_carrinho
-    (SELF IN OUT NOCOPY type_carrinho, iid NUMBER, iprodutos_possuidos type_nt_produto)
-    RETURN SELF AS RESULT IS
+CONSTRUCTOR FUNCTION type_carrinho(iid NUMBER, iprodutos_possuidos type_lista_de_produtos, iquantidade_itens NUMBER)
+RETURN SELF AS RESULT IS
     BEGIN
         SELF.id := iid;
-        SELF.produtos_possuidos := iprodutos;
-        SELF.quantidade_itens := SELECT COUNT(*) FROM type_nt_produto;
+        SELF.produtos_possuidos := iprodutos_possuidos;
+        SELF.quantidade_itens := iprodutos_possuidos.COUNT;
         RETURN;
     END;
 END;

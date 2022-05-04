@@ -5,6 +5,8 @@ DROP TABLE tab_funcionario
 /
 DROP TABLE tab_fornecedor
 /
+DROP TABLE tab_produto
+/
 DROP TABLE tab_carrinho
 /
 DROP TABLE tab_pedido
@@ -55,7 +57,7 @@ CREATE TABLE tab_produto OF type_produto(
 -- Carrinho
 CREATE TABLE tab_carrinho OF type_carrinho(
     id PRIMARY KEY
-)NESTED TABLE produtos_possuidos STORE AS produtos_do_carrinho;
+);
 /
 
 -- Pedido
