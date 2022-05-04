@@ -86,7 +86,6 @@ INSERT INTO tab_destinatario VALUES(
 
 
 -- Funcionário
-
 INSERT INTO tab_funcionario VALUES(
     type_funcionario(
         '11111111111',
