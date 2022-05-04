@@ -87,6 +87,70 @@ INSERT INTO tab_destinatario VALUES(
 
 -- Funcionário
 
+INSERT INTO tab_funcionario VALUES(
+    type_funcionario(
+        '11111111111',
+        'Pedro Lemos',
+        to_date('06/09/2001', dd/mm/yyyy),
+        type_nt_telefone(type_telefone('987210600')),
+        'Entregador Chefe',
+        7000,
+        null
+    )
+);
+/
+
+INSERT INTO tab_funcionario VALUES(
+    type_funcionario(
+        '11111111112',
+        'Pedro Didier',
+        to_date('12/05/2001', dd/mm/yyyy),
+        type_nt_telefone(type_telefone('987210601')),
+        'Entregador',
+        4500,
+        (SELECT REF(F) FROM tab_funcionario F WHERE F.CPF ='11111111111')
+    )
+);
+/
+
+INSERT INTO tab_funcionario VALUES(
+    type_funcionario(
+        '11111111113',
+        'Nilo Drummond',
+        to_date('05/11/2000', dd/mm/yyyy),
+        type_nt_telefone(type_telefone('987210602')),
+        'Entregador',
+        4500,
+        null
+    )
+);
+/
+
+INSERT INTO tab_funcionario VALUES(
+    type_funcionario(
+        '11111111114',
+        'Charles Gabriel',
+        to_date('25/04/2000', dd/mm/yyyy),
+        type_nt_telefone(type_telefone('987210603')),
+        'CEO',
+        17000,
+        null
+    )
+);
+/
+
+INSERT INTO tab_funcionario VALUES(
+    type_funcionario(
+        '11111111115',
+        'Antonio Guimaraes',
+        to_date('21/01/1980', dd/mm/yyyy),
+        type_nt_telefone(type_telefone('987210604')),
+        'Entregador',
+        4500,
+        (SELECT REF(F) FROM tab_funcionario F WHERE F.CPF ='11111111111')
+    )
+);
+/
 
 -- Fornecedor
 INSERT INTO tab_fornecedor VALUES(
@@ -398,6 +462,43 @@ INSERT INTO tab_carrinho VALUES(
 
 
 -- Pedido
+
+INSERT INTO tab_pedido VALUES (
+    seq_pedido.NEXTVAL,
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="11132342152"),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111111"),
+    (SELECT REF(C) FROM tab_carrinho C WHERE C.id=1),
+    to_date("13/02/2022", dd/mm/yyyy),
+    to_date("06/02/2022", dd/mm/yyyy),
+    32,
+    "C"
+);
+/
+
+INSERT INTO tab_pedido VALUES (
+    seq_pedido.NEXTVAL,
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="13421454442"),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111112"),
+    (SELECT REF(C) FROM tab_carrinho C WHERE C.id=2),
+    to_date("17/02/2022", dd/mm/yyyy),
+    to_date("05/02/2022", dd/mm/yyyy),
+    7,
+    "C"
+);
+/
+
+INSERT INTO tab_pedido VALUES (
+    seq_pedido.NEXTVAL,
+    (SELECT REF(D) FROM tab_destinatario D WHERE D.cpf="13421452212"),
+    (SELECT REF(F) FROM tab_funcionario F WHERE F.cpf="11111111113"),
+    (SELECT REF(C) FROM tab_carrinho C WHERE C.id=3),
+    to_date("18/03/2022", dd/mm/yyyy),
+    to_date("26/02/2022", dd/mm/yyyy),
+    148,
+    "B"
+);
+/
+
 
 -- Extravio
 INSERT INTO tab_extravio VALUES (
